@@ -28,8 +28,11 @@ import java.util.regex.Pattern;
 public class ExampleTest {
 
     private OexchainWeb3j oexchainWeb3J = OexchainWeb3j.build(new HttpService(ChainHost.TEST));
-    private String founderPrivateKey = "14d072cf6fa88e2a7ffd7cf6fa88e2a7f72cf6fa88e2a7ffd7fa88e2a7ffd7fd7f";
-    private String minerPrivateKey   = "f8890c0da8f3dae6547b22e3d206e3a249937a8f3dae6d206e3a249937a8f3dae6";
+    private String testNodeNamePrefix = "minernodetest";
+    private String founderPrivateKey = "14d0a9b88cbb8420463032aa75dd92ebbc7c2f32dcdf1e072cf6fa88e2a7ffd7";
+    private String minerPrivateKey   = "f8890c0dd5549c1059951fc12c454d8ef56a8f3dae6547b22e3d206e3a249937";
+    //private String founderPrivateKey = "14d072cf6fa88e2a7ffd7cf6fa88e2a7f72cf6fa88e2a7ffd7fa88e2a7ffd7fd7f";
+    //private String minerPrivateKey   = "f8890c0da8f3dae6547b22e3d206e3a249937a8f3dae6d206e3a249937a8f3dae6";
 
     @Test
     public void testCreateAccount() throws IOException, TransactionException {
@@ -43,8 +46,8 @@ public class ExampleTest {
         oexTransaction.setAssetId(AssetId.OEX);
         oexTransaction.setAmount(new BigInteger("1000000000000000000").multiply(new BigInteger("1")));
 
-        for (int i = 1; i < 10000; i++) {
-            String accountName = "accountdtest" + i;
+        for (int i = 1; i < 29; i++) {
+            String accountName = testNodeNamePrefix + i;
             String publicKey = "0x046d8ca26f82aabcc26ef2c1882240f8d80d31cf5cced6abc2357e5e7fc5a66d3860c9b36a4045f12dd027475dd6c8c3687509f0fc9d82d8f706727350e7bf288d";
             try {
                 //send transaction
@@ -60,8 +63,8 @@ public class ExampleTest {
         Credentials accout4testweb3jCredentials = Credentials.create(minerPrivateKey);
         TransactionManager oexTransactionManager = new TransactionManager.Builder().oexchainWeb3j(oexchainWeb3J).credentials(accout4testweb3jCredentials).chainId(ChainId.TEST).build();
 
-        for (int i = 1; i <= 28; i++) {
-            String accountName = "minernodetest" + i;
+        for (int i = 1; i < 29; i++) {
+            String accountName = testNodeNamePrefix + i;
             //create oexTransaction
             Transaction oexTransaction = new Transaction();
             oexTransaction.setActionType(ActionType.REGISTER_CANDIDATE);
@@ -90,7 +93,7 @@ public class ExampleTest {
         oexTransaction.setAmount(new BigInteger("1000000000000000000").multiply(new BigInteger("0")));
 
         for (int i = 1; i <= 28; i++) {
-            String accountName = "minernodetest" + i;
+            String accountName = testNodeNamePrefix + i;
             try {
                 //send transaction
                 TransactionReceipt oexTransactionReceipt = oexTransactionManager.sendRawTransaction(oexTransaction,
@@ -105,16 +108,16 @@ public class ExampleTest {
     public void testBatchTransferByFounder() throws IOException, TransactionException {
         Credentials accout4testweb3jCredentials = Credentials.create(founderPrivateKey);
 
-        for (int i = 1; i < 28; i++) {
+        for (int i = 1; i < 29; i++) {
             String accountName = "oexchain.founder";
-            String toAccountName = "minernodetest" + i;
+            String toAccountName = testNodeNamePrefix + i;
             //create oexTransaction
             Transaction oexTransaction = new Transaction();
             oexTransaction.setActionType(ActionType.TRANSFER);
             oexTransaction.setAccountName(accountName);
             oexTransaction.setToAccountName(toAccountName);
             oexTransaction.setAssetId(AssetId.OEX);
-            oexTransaction.setAmount(new BigInteger("1000000000000000000").multiply(new BigInteger("100000")));
+            oexTransaction.setAmount(new BigInteger("1000000000000000000").multiply(new BigInteger("300000")));
 
             TransactionManager oexTransactionManager = new TransactionManager.Builder().oexchainWeb3j(oexchainWeb3J).credentials(accout4testweb3jCredentials).chainId(ChainId.TEST).build();
             //send transaction
@@ -158,8 +161,8 @@ public class ExampleTest {
         Credentials accout4testweb3jCredentials = Credentials.create(minerPrivateKey);
         while(true) {
             for (int i = 1; i < 28; i++) {
-                String accountName = "minernodetest" + i;
-                String toAccountName = "minernodetest" + ( i + 1);
+                String accountName = testNodeNamePrefix + i;
+                String toAccountName = testNodeNamePrefix + ( i + 1);
                 //create oexTransaction
                 Transaction oexTransaction = new Transaction();
                 oexTransaction.setActionType(ActionType.TRANSFER);

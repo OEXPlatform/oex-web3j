@@ -39,15 +39,33 @@ public class PayloadProvider {
         return RlpEncoder.encode(rlpList);
     }
 
+    /**
+     * 获取转账payload
+     *
+     * @param
+     * @return
+     */
     public static byte[] createTransferPayload() {
         return new byte[0];
     }
 
+    /**
+     * 获取用户给候选者投票的payload
+     *
+     * @param
+     * @return
+     */
     public static byte[] createVoteCandidatePayload(String candidateName, BigInteger stake) {
         RlpList rlpList = new RlpList(RlpString.create(candidateName), RlpString.create(stake));
         return RlpEncoder.encode(rlpList);
     }
 
+    /**
+     * 获取超级账号退出接管的payload
+     *
+     * @param
+     * @return
+     */
     public static byte[] createExitTakeOverPayload() {
         return new byte[0];
     }
