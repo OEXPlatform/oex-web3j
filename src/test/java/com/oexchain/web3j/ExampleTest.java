@@ -29,10 +29,8 @@ public class ExampleTest {
 
     private OexchainWeb3j oexchainWeb3J = OexchainWeb3j.build(new HttpService(ChainHost.TEST));
     private String testNodeNamePrefix = "minernodetest";
-    private String founderPrivateKey = "14d0a9b88cbb8420463032aa75dd92ebbc7c2f32dcdf1e072cf6fa88e2a7ffd7";
-    private String minerPrivateKey   = "f8890c0dd5549c1059951fc12c454d8ef56a8f3dae6547b22e3d206e3a249937";
-    //private String founderPrivateKey = "14d072cf6fa88e2a7ffd7cf6fa88e2a7f72cf6fa88e2a7ffd7fa88e2a7ffd7fd7f";
-    //private String minerPrivateKey   = "f8890c0da8f3dae6547b22e3d206e3a249937a8f3dae6d206e3a249937a8f3dae6";
+    private String founderPrivateKey = "14d072cf6fa88e2a7ffd7cf6fa88e2a7f72cf6fa88e2a7ffd7fa88e2a7ffd7fd7f";
+    private String minerPrivateKey   = "f8890c0da8f3dae6547b22e3d206e3a249937a8f3dae6d206e3a249937a8f3dae6";
 
     @Test
     public void testCreateAccount() throws IOException, TransactionException {
