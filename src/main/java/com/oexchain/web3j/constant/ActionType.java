@@ -15,7 +15,7 @@ public interface ActionType {
     BigInteger MULTI_ASSET_CALL = Numeric.toBigInt("0x02");
 
     BigInteger CREATE_NEW_ACCOUNT = Numeric.toBigInt("0x100");
-    BigInteger UPDATE_ACCOUNT = Numeric.toBigInt("0x101");
+    BigInteger UPDATE_ACCOUNT_FOUNDER = Numeric.toBigInt("0x101");
     BigInteger DELETE_ACCOUNT = Numeric.toBigInt("0x102");
     BigInteger UPDATE_ACCOUNT_AUTHOR = Numeric.toBigInt("0x103");
     BigInteger UPDATE_ACCOUNT_DESC = Numeric.toBigInt("0x104");
@@ -24,12 +24,12 @@ public interface ActionType {
     BigInteger ISSUE_ASSET = Numeric.toBigInt("0x201");
     BigInteger DESTORY_ASSET = Numeric.toBigInt("0x202");
     BigInteger SET_ASSET_OWNER = Numeric.toBigInt("0x203");
-    BigInteger UPDATE_ASSET = Numeric.toBigInt("0x204");
+    BigInteger UPDATE_ASSET_FOUNDER = Numeric.toBigInt("0x204");
     BigInteger TRANSFER = Numeric.toBigInt("0x205");
     BigInteger UPDATE_ASSET_CONTRACT = Numeric.toBigInt("0x206");
 
     BigInteger REGISTER_CANDIDATE = Numeric.toBigInt("0x300");
-    BigInteger UPDATE_CANDIDATE = Numeric.toBigInt("0x301");
+    BigInteger UPDATE_CANDIDATE_URL = Numeric.toBigInt("0x301");
     BigInteger UNREG_CANDIDATE = Numeric.toBigInt("0x302");
     BigInteger REFUND_CANDIDATE = Numeric.toBigInt("0x303");
     BigInteger VOTE_CANDIDATE = Numeric.toBigInt("0x304");

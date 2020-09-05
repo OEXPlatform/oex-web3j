@@ -4,5 +4,5 @@ public interface ChainId {
 
     int MAIN = 1;
     int TEST = 100;
-
+    int LOCAL = 200;
 }
