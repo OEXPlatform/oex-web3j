@@ -70,12 +70,31 @@ public class TransactionManager {
         transaction.setGasLimit(oexGasProvider.getGasLimit());
         transaction.setGasPrice(oexGasProvider.getGasPrice());
         transaction.setPayload(payload);
-        String message = Numeric.toHexString(TransactionEncoder.signMessage(transaction, chainId, credentials, feePayer));
+        String message = Numeric.toHexString(TransactionEncoder.signMessage(transaction, chainId, credentials, feePayer, false));
         SendTransactionResult sendTransactionResult = oexchainWeb3J.sendRawTransaction(message).send();
         logger.debug("TransactionHash: {}", sendTransactionResult.getTransactionHash());
         return transactionReceiptProcessor.waitForTransactionReceipt(sendTransactionResult.getTransactionHash());
     }
 
+    /**
+     * 发起普通交易，由父账号签名
+     *
+     * @param transaction
+     * @param payload       {@link PayloadProvider}
+     * @return
+     * @throws IOException
+     * @throws TransactionException
+     */
+    public TransactionReceipt sendRawTransactionByFatherAccount(Transaction transaction, byte[] payload) throws IOException, TransactionException {
+        transaction.setNonce(getNonce(transaction.getAccountName()));
+        transaction.setGasLimit(oexGasProvider.getGasLimit());
+        transaction.setGasPrice(oexGasProvider.getGasPrice());
+        transaction.setPayload(payload);
+        String message = Numeric.toHexString(TransactionEncoder.signMessage(transaction, chainId, credentials, feePayer, true));
+        SendTransactionResult sendTransactionResult = oexchainWeb3J.sendRawTransaction(message).send();
+        logger.debug("TransactionHash: {}", sendTransactionResult.getTransactionHash());
+        return transactionReceiptProcessor.waitForTransactionReceipt(sendTransactionResult.getTransactionHash());
+    }
     /**
      * @param callTransaction
      * @param function

@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TransactionEncoder {
 
-    public static byte[] signMessage(Transaction transaction, int chainId, Credentials credentials, FeePayer feePayer) {
+    public static byte[] signMessage(Transaction transaction, int chainId, Credentials credentials, FeePayer feePayer, Boolean bSignedByFather) {
         if (feePayer != null) {
             transaction.setGasPrice(BigInteger.ZERO);
         }
@@ -25,7 +25,7 @@ public class TransactionEncoder {
             Sign.SignatureData payerSign = signPayer(transaction, feePayer, chainId);
             payer = encodePayer(feePayer, payerSign, createSignatureData(payerSign, chainId));
         }
-        return encode(transaction, signatureData, createSignatureData(signatureData, chainId), payer);
+        return encode(transaction, signatureData, createSignatureData(signatureData, chainId), payer, bSignedByFather);
     }
 
     private static RlpList encodePayer(FeePayer feePayer, Sign.SignatureData payerSign, byte[] v) {
@@ -104,7 +104,7 @@ public class TransactionEncoder {
         return signatureData;
     }
 
-    private static byte[] encode(Transaction transaction, Sign.SignatureData signatureData, byte[] v, RlpList payer) {
+    private static byte[] encode(Transaction transaction, Sign.SignatureData signatureData, byte[] v, RlpList payer, Boolean bSignedByFather) {
         List<RlpType> action = new ArrayList<>();
         action.add(RlpString.create(transaction.getActionType()));
         action.add(RlpString.create(transaction.getNonce()));
@@ -116,7 +116,7 @@ public class TransactionEncoder {
         action.add(RlpString.create(transaction.getPayload()));
         action.add(RlpString.create(transaction.getRemark()));
         action.add(new RlpList(
-                RlpString.create(0),
+                RlpString.create(bSignedByFather ? 1 : 0),
                 new RlpList(new RlpList(
                         RlpString.create(v),
                         RlpString.create(signatureData.getR()),

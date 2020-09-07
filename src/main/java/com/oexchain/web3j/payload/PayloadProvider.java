@@ -72,15 +72,52 @@ public class PayloadProvider {
     /**
      * 更新账户权限的payload
      *
-     * @param threshold
-     * @param updateAuthorThreshold
-     * @param publicKey
-     * @param weight
      * @return
+     * type AccountAuthorAction struct {
+     *  Threshold             uint64          `json:"threshold,omitempty"`
+     *  UpdateAuthorThreshold uint64          `json:"updateAuthorThreshold,omitempty"`
+     *  AuthorActions         []*AuthorAction `json:"authorActions,omitempty"`
+     * }
+     * type AuthorAction struct {
+     *  ActionType AuthorActionType //必填项 0添加 1更新 2删除
+     *  Author     *common.Author //必填项
+     * }
+     *
+     * type Author struct {
+     *  Owner  `json:"owner"`         //用户名，地址或公钥
+     *  Weight uint64 `json:"weight"` //必填项 权重
+     * }
+     *
+     * Owner interface {
+     *  String() string
+     * }
+     *
+     *
+    authorUpdateList.push([author.status, [ownerType, owner, author.weight]]);
+    });
+
+    const payload = '0x' + encode([threshold, updateAuthorThreshold, [...authorUpdateList]]).toString('hex');
      */
-    public static byte[] updateAccountAuthorPayload(Long threshold, Long updateAuthorThreshold, String publicKey, Long weight) {
-        RlpList rlpList = new RlpList(RlpString.create(threshold), RlpString.create(updateAuthorThreshold),
-                new RlpList(new RlpList(RlpString.create(1), new RlpList(RlpString.create(publicKey), RlpString.create(weight)))));
+    public static byte[] updateAccountAuthorPayload(String oldPublicKey, String newPublicKey) {
+        Long threshold = 1L;
+        Long updateAuthorThreshold = 1L;
+        Long addAuthor = 0L;
+        Long deleteAuthor = 2L;
+        Long publicKeyType = 1L;
+        Long weight = 1L;
+
+        RlpList deletePubKeyList = new RlpList(RlpString.create(deleteAuthor),
+                                               new RlpList(RlpString.create(publicKeyType),
+                                                           RlpString.create(Numeric.hexStringToByteArray(oldPublicKey)),
+                                                           RlpString.create(weight)));
+        RlpList addPubKeyList = new RlpList(RlpString.create(addAuthor),
+                                            new RlpList(RlpString.create(publicKeyType),
+                                                        RlpString.create(Numeric.hexStringToByteArray(newPublicKey)),
+                                                        RlpString.create(weight)));
+
+        RlpList rlpList = new RlpList(RlpString.create(threshold),
+                                      RlpString.create(updateAuthorThreshold),
+                                      new RlpList(deletePubKeyList, addPubKeyList));
         return RlpEncoder.encode(rlpList);
     }
 
