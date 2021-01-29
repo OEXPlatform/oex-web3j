@@ -5,6 +5,7 @@ import com.oexchain.web3j.constant.AssetId;
 import com.oexchain.web3j.constant.ChainHost;
 import com.oexchain.web3j.constant.ChainId;
 import com.oexchain.web3j.payload.PayloadProvider;
+import com.oexchain.web3j.request.CallTransaction;
 import com.oexchain.web3j.response.TransactionReceipt;
 import com.oexchain.web3j.tx.Transaction;
 import com.oexchain.web3j.tx.TransactionManager;
@@ -13,6 +14,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.Test;
+import org.web3j.abi.datatypes.Function;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
@@ -27,33 +29,37 @@ import java.util.regex.Pattern;
 
 public class ExampleTest {
 
-    private OexchainWeb3j oexchainWeb3J = OexchainWeb3j.build(new HttpService(ChainHost.LOCAL));
-    private int chainId = ChainId.LOCAL;
+    private OexchainWeb3j oexchainWeb3J = OexchainWeb3j.build(new HttpService(ChainHost.TEST));
+    private int chainId = ChainId.TEST;
     private String testNodeNamePrefix = "minernodetest";
-    private String founderPrivateKey = "14d072cf6fa88e2a7ffd7cf6fa88e2a7f72cf6fa88e2a7ffd7fa88e2a7ffd7fd7f";
-    private String minerPrivateKey   = "f8890c0da8f3dae6547b22e3d206e3a249937a8f3dae6d206e3a249937a8f3dae6";
-    private String anotherPrivateKey = "f8890c0da8f3dae6547b22e3d206e3a249937a8f3dae6d206e3a249937a8f3dae6";
-
+    private String oexchainOfficial = "oexchainofficial";
+    private String contractAccount = "";
+//    private String founderPrivateKey = "14d072cf6fa88e2a7ffd7cf6fa88e2a7f72cf6fa88e2a7ffd7fa88e2a7ffd7fd7f";
+//    private String minerPrivateKey   = "f8890c0da8f3dae6547b22e3d206e3a249937a8f3dae6d206e3a249937a8f3dae6";
+    private String founderPrivateKey = "";
+    private String minerPrivateKey   = "";
+    private String minerPrivateKey1 = "";
+    private String anotherPrivateKey = "";
 
     @Test
     public void testCreateAccount() throws IOException, TransactionException {
-        Credentials accout4testweb3jCredentials = Credentials.create(founderPrivateKey);
+        Credentials accout4testweb3jCredentials = Credentials.create(minerPrivateKey1);
         TransactionManager oexTransactionManager = new TransactionManager.Builder().oexchainWeb3j(oexchainWeb3J).credentials(accout4testweb3jCredentials).chainId(chainId).build();
         //create oexTransaction
         Transaction oexTransaction = new Transaction();
         oexTransaction.setActionType(ActionType.CREATE_NEW_ACCOUNT);
-        oexTransaction.setAccountName("oexchain.founder");
+        oexTransaction.setAccountName(oexchainOfficial);
         oexTransaction.setToAccountName("oexchain.account");
         oexTransaction.setAssetId(AssetId.OEX);
-        oexTransaction.setAmount(new BigInteger("1000000000000000000").multiply(new BigInteger("100000")));
+        oexTransaction.setAmount(new BigInteger("1000000000000000000").multiply(new BigInteger("1")));
 
-        for (int i = 1; i < 10; i++) {
-            String accountName = testNodeNamePrefix + i;
+        for (int i = 1; i < 2; i++) {
+            String accountName = "qqqqqqqqqqq2"; //testNodeNamePrefix + i;
             String publicKey = "0x046d8ca26f82aabcc26ef2c1882240f8d80d31cf5cced6abc2357e5e7fc5a66d3860c9b36a4045f12dd027475dd6c8c3687509f0fc9d82d8f706727350e7bf288d";
             try {
                 //send transaction
                 TransactionReceipt oexTransactionReceipt = oexTransactionManager.sendRawTransaction(oexTransaction,
-                        PayloadProvider.createAccountPayload(accountName, "oexchain.founder", publicKey, "Srv"));
+                        PayloadProvider.createAccountPayload(accountName, oexchainOfficial, publicKey, "Srv"));
                 System.out.println(oexTransactionReceipt);
             } catch (Exception e){
                 System.out.println(e.getMessage());
@@ -64,19 +70,19 @@ public class ExampleTest {
 
     @Test
     public void testCreateSubAccount() throws IOException, TransactionException {
-        Credentials accout4testweb3jCredentials = Credentials.create(minerPrivateKey);
+        Credentials accout4testweb3jCredentials = Credentials.create(minerPrivateKey1);
         TransactionManager oexTransactionManager = new TransactionManager.Builder().oexchainWeb3j(oexchainWeb3J).credentials(accout4testweb3jCredentials).chainId(chainId).build();
         //create oexTransaction
         Transaction oexTransaction = new Transaction();
-        String fatherAccount = testNodeNamePrefix + '0';
+        String fatherAccount = oexchainOfficial;
         oexTransaction.setActionType(ActionType.CREATE_NEW_ACCOUNT);
         oexTransaction.setAccountName(fatherAccount);
         oexTransaction.setToAccountName("oexchain.account");
         oexTransaction.setAssetId(AssetId.OEX);
-        oexTransaction.setAmount(new BigInteger("1000000000000000000").multiply(new BigInteger("0")));
+        oexTransaction.setAmount(new BigInteger("1000000000000000000").multiply(new BigInteger("10")));
 
         for (int i = 0; i < 1; i++) {
-            String accountName = fatherAccount + ".samyu";  // 这就是子账号,子账号长度3~16个字符
+            String accountName = fatherAccount + ".samyu100";  // 这就是子账号,子账号长度3~16个字符
             String publicKey = "0x046d8ca26f82aabcc26ef2c1882240f8d80d31cf5cced6abc2357e5e7fc5a66d3860c9b36a4045f12dd027475dd6c8c3687509f0fc9d82d8f706727350e7bf288d";
             try {
                 //send transaction
@@ -275,7 +281,37 @@ public class ExampleTest {
     }
     @Test
     public void testTransfer() throws IOException, TransactionException {
-        Credentials accout4testweb3jCredentials = Credentials.create("786d968206fdfab98b26c9e2ebfa061c09abc28c7c39da023b0630");
+        Credentials accout4testweb3jCredentials = Credentials.create(minerPrivateKey);
+        TransactionManager oexTransactionManager = new TransactionManager.Builder().oexchainWeb3j(oexchainWeb3J).credentials(accout4testweb3jCredentials).chainId(chainId).build();
+        //create oexTransaction
+        Transaction oexTransaction = new Transaction();
+        oexTransaction.setActionType(ActionType.TRANSFER);
+        oexTransaction.setAccountName("accout4testweb3j");
+        oexTransaction.setToAccountName("accout4testweb3j.test1");
+        oexTransaction.setAssetId(AssetId.OEX);
+        oexTransaction.setAmount(new BigInteger("10000000000000000"));//0.01oex
+        //send transaction
+        TransactionReceipt oexTransactionReceipt = oexTransactionManager.sendRawTransaction(oexTransaction, PayloadProvider.createTransferPayload());
+        System.out.println(oexTransactionReceipt);
+    }
+
+    @Test
+    public void testReadContract() throws IOException, TransactionException {
+        Credentials accout4testweb3jCredentials = Credentials.create(minerPrivateKey1);
+        TransactionManager oexTransactionManager = new TransactionManager.Builder().oexchainWeb3j(oexchainWeb3J).credentials(accout4testweb3jCredentials).chainId(chainId).build();
+        //create oexTransaction
+        CallTransaction oexTransaction = new CallTransaction();
+        oexTransaction.setFrom(oexchainOfficial);
+        Function function = new Function("voterRewardRecord", );
+        function
+        //send transaction
+        TransactionReceipt oexTransactionReceipt = oexTransactionManager.call(oexTransaction, );
+        System.out.println(oexTransactionReceipt);
+    }
+
+    @Test
+    public void testWriteContract() throws IOException, TransactionException {
+        Credentials accout4testweb3jCredentials = Credentials.create(minerPrivateKey);
         TransactionManager oexTransactionManager = new TransactionManager.Builder().oexchainWeb3j(oexchainWeb3J).credentials(accout4testweb3jCredentials).chainId(chainId).build();
         //create oexTransaction
         Transaction oexTransaction = new Transaction();
